@@ -26,6 +26,7 @@ async function run() {
         await client.connect();
         const productsCollection = client.db('square-electronic').collection('products');
         const reviewsCollection = client.db('square-electronic').collection('reviews');
+        const ordersCollection = client.db('square-electronic').collection('orders');
 
         app.get('/products', async (req, res) => {
             const query = {};
@@ -38,6 +39,12 @@ async function run() {
             const cursor = reviewsCollection.find(query);
             const reviews = await cursor.toArray();
             res.send(reviews)
+        })
+        // post orders to mongodb
+        app.post('/orders', async (req, res) => {
+            const order = req.body;
+            const result = await ordersCollection.insertOne(order);
+            res.send(result)
         })
     }
     finally {
