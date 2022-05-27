@@ -72,11 +72,7 @@ async function run() {
         })
 
         // User api
-        app.post('/users', async (req, res) => {
-            const order = req.body;
-            const result = await usersCollection.insertOne(order);
-            res.send(result)
-        })
+
         app.put('/users/:email', async (req, res) => {
             const email = req.params.email;
             const user = req.body;
