@@ -11,11 +11,11 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.send('Hello doctor server!')
+    res.send('Hello square electronics!')
 })
 
 app.listen(port, () => {
-    console.log(`doctor app listening on port ${port}`)
+    console.log(`square electronic app listening on port ${port}`)
 })
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.m76po.mongodb.net/?retryWrites=true&w=majority`;
@@ -34,17 +34,31 @@ async function run() {
             const products = await cursor.toArray();
             res.send(products)
         })
+        // reviews api
         app.get('/reviews', async (req, res) => {
             const query = {};
             const cursor = reviewsCollection.find(query);
             const reviews = await cursor.toArray();
             res.send(reviews)
         })
-        // post orders to mongodb
+        app.post('/reviews', async (req, res) => {
+            const review = req.body;
+            const result = await reviewsCollection.insertOne(review);
+            res.send(result);
+        })
+
+        // orders api
         app.post('/orders', async (req, res) => {
             const order = req.body;
             const result = await ordersCollection.insertOne(order);
             res.send(result)
+        })
+
+        app.get('/orders', async (req, res) => {
+            const query = {};
+            const cursor = ordersCollection.find(query);
+            const orders = await cursor.toArray();
+            res.send(orders)
         })
     }
     finally {
