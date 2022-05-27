@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 5000;
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const cors = require('cors');
 require('dotenv').config();
@@ -27,6 +27,7 @@ async function run() {
         const productsCollection = client.db('square-electronic').collection('products');
         const reviewsCollection = client.db('square-electronic').collection('reviews');
         const ordersCollection = client.db('square-electronic').collection('orders');
+        const usersCollection = client.db('square-electronic').collection('users');
 
         app.get('/products', async (req, res) => {
             const query = {};
@@ -60,6 +61,31 @@ async function run() {
             const orders = await cursor.toArray();
             res.send(orders)
         })
+
+
+
+        app.delete('/myorders/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) }
+            const result = await ordersCollection.deleteOne(filter);
+            res.send(result)
+        })
+
+        // User api
+        app.post('/users', async (req, res) => {
+            const order = req.body;
+            const result = await usersCollection.insertOne(order);
+            res.send(result)
+        })
+
+
+        app.get('/users', async (req, res) => {
+            const query = {};
+            const cursor = usersCollection.find(query);
+            const users = await cursor.toArray();
+            res.send(users)
+        })
+
     }
     finally {
 
