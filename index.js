@@ -77,6 +77,17 @@ async function run() {
             const result = await usersCollection.insertOne(order);
             res.send(result)
         })
+        app.put('/users/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = req.body;
+            const filter = { userEmail: email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: user,
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+        })
 
 
         app.get('/users', async (req, res) => {
