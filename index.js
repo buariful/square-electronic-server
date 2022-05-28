@@ -32,11 +32,24 @@ async function run() {
         const ordersCollection = client.db('square-electronic').collection('orders');
         const usersCollection = client.db('square-electronic').collection('users');
 
+        // products
         app.get('/products', async (req, res) => {
             const query = {};
             const cursor = productsCollection.find(query);
             const products = await cursor.toArray();
             res.send(products)
+        })
+
+        app.put('/updateproducts/:id', async (req, res) => {
+            const id = req.params.id;
+            const product = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: product,
+            };
+            const result = await productsCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
         })
         // reviews api
         app.get('/reviews', async (req, res) => {
@@ -52,11 +65,11 @@ async function run() {
         })
 
         // orders api
-        app.post('/orders', async (req, res) => {
-            const order = req.body;
-            const result = await ordersCollection.insertOne(order);
-            res.send(result)
-        })
+        // app.post('/orders', async (req, res) => {
+        //     const order = req.body;
+        //     const result = await ordersCollection.insertOne(order);
+        //     res.send(result)
+        // })
 
         app.get('/orders', async (req, res) => {
             const query = {};
