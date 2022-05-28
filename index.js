@@ -65,11 +65,11 @@ async function run() {
         })
 
         // orders api
-        // app.post('/orders', async (req, res) => {
-        //     const order = req.body;
-        //     const result = await ordersCollection.insertOne(order);
-        //     res.send(result)
-        // })
+        app.post('/orders', async (req, res) => {
+            const order = req.body;
+            const result = await ordersCollection.insertOne(order);
+            res.send(result)
+        })
 
         app.get('/orders', async (req, res) => {
             const query = {};
