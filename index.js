@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const port = process.env.PORT || 5000;
+const jwt = require('jsonwebtoken');
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
@@ -20,6 +21,8 @@ app.listen(port, () => {
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.m76po.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+
+
 
 async function run() {
     try {
@@ -82,7 +85,8 @@ async function run() {
                 $set: user,
             };
             const result = await usersCollection.updateOne(filter, updateDoc, options);
-            res.send(result);
+            const accessToken = jwt.sign({ emai: email }, process.env.ACCESS_TOKEN);
+            res.send({ result, accessToken });
         })
 
 
